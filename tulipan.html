@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dibujo de Tulipán con Vértices</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+  body {
+    margin: 0;
+    background: #ffffff;
+    color: #6b7280;
+    font-family: 'Poppins', sans-serif, system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 4rem 1rem;
+  }
+  main {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    color: #111827;
+    margin-bottom: 1rem;
+    user-select: none;
+  }
+  #canvas-container {
+    margin: 0 auto;
+    width: 320px;
+    height: 480px;
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  canvas {
+    border-radius: 0.75rem;
+    background: #fffefc;
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+</style>
+</head>
+<body>
+  <main>
+    <h1>Tulipán Dibujado con Vértices</h1>
+    <div id="canvas-container" role="img" aria-label="Dibujo elegante de un tulipán con vértices">
+      <canvas id="tulipCanvas" width="300" height="450" aria-hidden="true"></canvas>
+    </div>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('tulipCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw filled polygon helper
+    function drawPolygon(points, fillStyle, strokeStyle, lineWidth=2) {
+      ctx.beginPath();
+      ctx.moveTo(points[0][0], points[0][1]);
+      for(let i=1; i<points.length; i++){
+        ctx.lineTo(points[i][0], points[i][1]);
+      }
+      ctx.closePath();
+      ctx.fillStyle = fillStyle;
+      ctx.fill();
+      ctx.lineWidth = lineWidth;
+      ctx.strokeStyle = strokeStyle;
+      ctx.stroke();
+    }
+
+    // Draw shadow under a polygon by offsetting vertices
+    function drawShadow(points, color, offsetX=3, offsetY=4) {
+      const shadowPoints = points.map(([x,y]) => [x+offsetX, y+offsetY]);
+      drawPolygon(shadowPoints, color, 'transparent', 0);
+    }
+
+    // Tulip petals vertices - simplified symmetrical petals
+    const leftPetal = [
+      [150, 60],
+      [120, 150],
+      [130, 220],
+      [145, 280],
+      [155, 280],
+      [160, 220],
+      [170, 150]
+    ];
+
+    // Right petal is a mirror on X axis around 150 (adjusted)
+    // We will construct rightPetal by mirroring leftPetal horizontally
+    const rightPetal = leftPetal.map(([x,y]) => [300 - x, y]);
+
+    // Stem - a thick vertical rectangle
+    const stem = [
+      [145, 280],
+      [155, 280],
+      [155, 440],
+      [145, 440]
+    ];
+
+    // Leaves - simple curved shapes made with polygons for vertices approx
+    const leafLeft = [
+      [140, 330],
+      [90, 310],
+      [120, 380],
+      [110, 420]
+    ];
+
+    const leafRight = [
+      [160, 330],
+      [210, 310],
+      [180, 380],
+      [190, 420]
+    ];
+
+    // Draw shadows beneath petals and leaves
+    drawShadow(leftPetal, 'rgba(230, 57, 70, 0.15)');
+    drawShadow(rightPetal, 'rgba(230, 57, 70, 0.15)');
+    drawShadow(leafLeft, 'rgba(42, 157, 143, 0.15)');
+    drawShadow(leafRight, 'rgba(42, 157, 143, 0.15)');
+    drawShadow(stem, 'rgba(58,107,88, 0.15)');
+
+    // Draw petals with fill and stroke
+    drawPolygon(leftPetal, '#E63946', '#9b1b1b', 2);
+    drawPolygon(rightPetal, '#E63946', '#9b1b1b', 2);
+
+    // Draw stem
+    drawPolygon(stem, '#3a6b58', '#1f3d2a', 3);
+
+    // Draw leaves
+    drawPolygon(leafLeft, '#2a9d8f', '#175f50', 2.5);
+    drawPolygon(leafRight, '#2a9d8f', '#175f50', 2.5);
+  </script>
+</body>
+</html>
